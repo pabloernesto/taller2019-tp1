@@ -42,10 +42,31 @@ static char *test_no_board_error() {
   return 0;
 }
 
+static char *test_bad_solution() {
+  struct Sudoku game = { {
+    { '1', '1', '1', '1', '1', '1', '1', '1', '1', },
+    { '2', '2', '2', '2', '2', '2', '2', '2', '2', },
+    { '3', '3', '3', '3', '3', '3', '3', '3', '3', },
+    { '4', '4', '4', '4', '4', '4', '4', '4', '4', },
+    { '5', '5', '5', '5', '5', '5', '5', '5', '5', },
+    { '6', '6', '6', '6', '6', '6', '6', '6', '6', },
+    { '7', '7', '7', '7', '7', '7', '7', '7', '7', },
+    { '8', '8', '8', '8', '8', '8', '8', '8', '8', },
+    { '9', '9', '9', '9', '9', '9', '9', '9', '9', },
+  }, {{ 0 }} };
+  SudokuBoard_Clear(game.hints);
+
+  int r = Sudoku_IsSolved(&game);
+
+  mu_assert("test_solved_board failed: expected 0", r == 0);
+  return 0;
+}
+
 static char *all_tests() {
   mu_run_test(test_clear_hints);
   mu_run_test(test_solved_board);
   mu_run_test(test_no_board_error);
+  mu_run_test(test_bad_solution);
   return 0;
 }
 
