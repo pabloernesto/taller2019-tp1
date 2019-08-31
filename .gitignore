@@ -2,4 +2,8 @@
 client
 server
 .vscode
-test_board
+
+test_*
+!test_*.sh
+!test_*.c
+!test_*.h
