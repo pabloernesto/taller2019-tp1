@@ -35,9 +35,17 @@ static char *test_solved_board() {
   return 0;
 }
 
+static char *test_no_board_error() {
+  int r = Sudoku_IsSolved(0);
+
+  mu_assert("test_no_board_error failed: expected -1", r == -1);
+  return 0;
+}
+
 static char *all_tests() {
   mu_run_test(test_clear_hints);
   mu_run_test(test_solved_board);
+  mu_run_test(test_no_board_error);
   return 0;
 }
 
