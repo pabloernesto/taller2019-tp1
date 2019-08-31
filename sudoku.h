@@ -11,6 +11,10 @@ struct Sudoku {
   SudokuBoard hints;
 };
 
+// Checks if the board is solved.
+// Returns 1 if solved, 0 if not, or a negative number if an error ocurred.
+int Sudoku_IsSolved(const struct Sudoku *game);
+
 // Sets all squares on the board to undefined ('0')
 void SudokuBoard_Clear(SudokuBoard board);
 
