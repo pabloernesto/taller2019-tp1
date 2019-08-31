@@ -112,6 +112,7 @@ fuentes_client ?= $(wildcard client*.$(extension))
 fuentes_server ?= $(wildcard server*.$(extension))
 fuentes_common ?= $(wildcard common*.$(extension))
 fuentes_test ?= $(wildcard test*.$(extension))
+test_scripts ?= $(wildcard test*.sh)
 directorios = $(shell find . -type d -regex '.*\w+')
 
 occ := $(CC)
@@ -167,8 +168,9 @@ lint:
 	# En una sola linea para que ejecute el script en el subdirectorio
 	cd cpplint; ./execute.sh
 
-test: all $(test_bins)
+test: all $(test_bins) $(test_scripts)
 	$(foreach test, $(test_bins), ./$(test))
+	$(foreach test, $(test_scripts), ./$(test))
 
 $(test_bins): %: %.o $(o_common_files)
 	$(LD) $^ -o $@ $(LDFLAGS)
