@@ -55,7 +55,7 @@ int Socket_Accept(int listener) {
 int Socket_ReceiveN(int socket, int n, char *s) {
   int received = 0;
   while (received < n) {
-    int r = recv(socket, s, n, 0);
+    int r = recv(socket, s, n - received, 0);
     if (r < 0)
       return received;
     received += r;
