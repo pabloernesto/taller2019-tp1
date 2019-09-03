@@ -5,6 +5,8 @@
 int Socket_Connect(const char *host, const char *port);
 
 // Listen for incoming connections
+// returns the listener file descriptor if successful,
+//   or a negative error code if unsuccessful 
 int Socket_Listen(const char *port);
 int Socket_Accept(int listener);
 
@@ -14,10 +16,7 @@ int Socket_Accept(int listener);
 int Socket_ReceiveN(int socket, int n, char *s);
 int Socket_SendN(int socket, int n, const char *s);
 
-// Shutdown the socket for read, write, or both, depending on the value of how
-#define SHUT_RD 0
-#define SHUT_WR 1
-#define SHUT_RDWR 2
-void Socket_Shutdown(int socket, int how);
+// Shutdown and close the socket
+void Socket_Close(int socket);
 
 #endif  //SOCKET_H_
