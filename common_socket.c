@@ -7,7 +7,6 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <assert.h>
 
 #define BACKLOG 10
 
@@ -20,7 +19,6 @@ int Socket_Listen(const char *port) {
   struct addrinfo *addr;
   if (getaddrinfo(NULL, port, &hints, &addr))
     return -1;
-  assert(addr);
 
   int listener;
   struct addrinfo *addr_p;
