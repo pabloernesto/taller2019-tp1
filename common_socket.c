@@ -50,6 +50,38 @@ int Socket_Accept(int listener) {
   return accept(listener, &addr_p, &addr_len);
 }
 
+int Socket_Connect(const char *host, const char *port) {
+  struct addrinfo hints = {
+    .ai_family = AF_UNSPEC,
+    .ai_socktype = SOCK_STREAM
+  };
+  struct addrinfo *addr;
+  int ret = getaddrinfo(host, port, &hints, &addr);
+  if (ret) {
+    printf("getaddrinfo: %s\n", gai_strerror(ret));
+    return -1;
+  }
+
+  int connection = -1;
+  struct addrinfo *addr_p = addr;
+  for (; addr_p; addr_p = addr_p->ai_next) {
+    connection = socket(addr_p->ai_family, addr_p->ai_socktype,
+      addr_p->ai_protocol);
+    if (connection == -1)
+      continue;
+    if (!connect(connection, addr_p->ai_addr, addr_p->ai_addrlen))
+      break;
+    perror("connect");
+    close(connection);
+  }
+
+  freeaddrinfo(addr);
+  if (!addr_p)
+    return -2;
+
+  return connection;
+}
+
 int Socket_ReceiveN(int socket, int n, char *s) {
   int received = 0;
   while (received < n) {
@@ -59,6 +91,17 @@ int Socket_ReceiveN(int socket, int n, char *s) {
     received += r;
   }
   return received;
+}
+
+int Socket_SendN(int socket, int n, const char *s) {
+  int sent = 0;
+  while (sent < n) {
+    int r = send(socket, s, n - sent, 0);
+    if (r < 0)
+      return sent;
+    sent += r;
+  }
+  return sent;
 }
 
 void Socket_Close(int socket) {
