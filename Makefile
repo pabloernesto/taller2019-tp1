@@ -112,6 +112,7 @@ fuentes_client ?= $(wildcard client*.$(extension))
 fuentes_server ?= $(wildcard server*.$(extension))
 fuentes_common ?= $(wildcard common*.$(extension))
 fuentes_test ?= $(wildcard test*.$(extension))
+fuentes_aux_test ?= $(wildcard aux_test*.$(extension))
 test_scripts ?= $(wildcard test*.sh)
 directorios = $(shell find . -type d -regex '.*\w+')
 
@@ -140,7 +141,9 @@ o_common_files = $(patsubst %.$(extension),%.o,$(fuentes_common))
 o_client_files = $(patsubst %.$(extension),%.o,$(fuentes_client))
 o_server_files = $(patsubst %.$(extension),%.o,$(fuentes_server))
 o_test_files = $(patsubst %.$(extension),%.o,$(fuentes_test))
+o_aux_test_files = $(patsubst %.$(extension),%.o,$(fuentes_aux_test))
 test_bins = $(patsubst %.$(extension),%,$(fuentes_test))
+aux_test_bins = $(patsubst %.$(extension),%,$(fuentes_aux_test))
 
 client: $(o_common_files) $(o_client_files)
 	@if [ -z "$(o_client_files)" ]; \
@@ -162,15 +165,18 @@ server: $(o_common_files) $(o_server_files)
 
 clean:
 	$(RM) -f $(o_common_files) $(o_client_files) $(o_server_files) \
-		client server $(test_bins) $(o_test_files)
+		client server $(test_bins) $(o_test_files) $(aux_test_bins) $(o_aux_test_files)
 
 lint:
 	# En una sola linea para que ejecute el script en el subdirectorio
 	cd cpplint; ./execute.sh
 
-test: all $(test_bins) $(test_scripts)
+test: all $(test_bins) $(test_scripts) $(aux_test_bins)
 	$(foreach test, $(test_bins), ./$(test))
 	$(foreach test, $(test_scripts), ./$(test))
 
 $(test_bins): %: %.o $(o_common_files)
+	$(LD) $^ -o $@ $(LDFLAGS)
+
+$(aux_test_bins): %: %.o $(o_common_files)
 	$(LD) $^ -o $@ $(LDFLAGS)
