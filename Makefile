@@ -173,7 +173,7 @@ lint:
 
 test: all $(test_bins) $(test_scripts) $(aux_test_bins)
 	$(foreach test, $(test_bins), ./$(test))
-	$(foreach test, $(test_scripts), ./$(test))
+	for test in $(test_scripts); do ./$$test; done
 
 $(test_bins): %: %.o $(o_common_files)
 	$(LD) $^ -o $@ $(LDFLAGS)
