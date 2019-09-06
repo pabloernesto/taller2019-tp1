@@ -1,6 +1,5 @@
 *.o
-client
-server
+tp
 .vscode
 
 test_*

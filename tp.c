@@ -1,5 +1,5 @@
 #include <stdio.h>
 
 int main(int argc, char **argv) {
-  puts("hello client!");
+  puts("hello world!");
 }
