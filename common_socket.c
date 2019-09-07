@@ -89,6 +89,7 @@ int Socket_ReceiveN(int socket, int n, char *s) {
     if (r < 0)
       return received;
     received += r;
+    s += received;
   }
   return received;
 }
@@ -100,6 +101,7 @@ int Socket_SendN(int socket, int n, const char *s) {
     if (r < 0)
       return sent;
     sent += r;
+    s += sent;
   }
   return sent;
 }
