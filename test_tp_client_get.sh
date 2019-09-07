@@ -28,8 +28,11 @@ U   | 7 |   U 5 |   |   U 6 |   | 9 U
 U===========U===========U===========U
 EOF
 
-# TODO: 1234 is not the right prefix! send the length of the input
-echo -n 1234 | cat - board_display.txt | nc -l $port >$network_output &
+# 00 00 02 D2 is hexa for 722 big-endian
+echo "0000000: 0000 02D2" \
+  | xxd -revert \
+  | cat - board_display.txt \
+  | nc -l $port >$network_output &
 server=$!
 
 # this sleep prevents the client from attempting connection
