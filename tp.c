@@ -6,11 +6,14 @@
 #include <string.h>
 
 int main(int argc, char **argv) {
-  if (argc != 3)
+  if (argc != 4)
     return 1;
 
-  const char *host = argv[1];
-  const char *port = argv[2];
+  if (strcmp(argv[1], "client"))
+    return 1;
+
+  const char *host = argv[2];
+  const char *port = argv[3];
   int connection = Socket_Connect(host, port);
 
 hash_handlers();    // initialize handler table

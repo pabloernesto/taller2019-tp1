@@ -36,7 +36,7 @@ server=$!
 # until the server is up
 sleep .1s
 
-./tp localhost $port >$standard_output << EOF
+./tp client localhost $port >$standard_output << EOF
 get
 exit
 EOF
