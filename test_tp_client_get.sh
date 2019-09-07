@@ -1,5 +1,5 @@
 #! /bin/bash
-testname=test_tp_client_error
+testname=test_tp_client_get
 
 # selects a random port in the range 1000..9000
 port=`echo "1000 + $RANDOM * 8000 / 32767" | bc`
