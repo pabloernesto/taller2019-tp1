@@ -26,6 +26,8 @@ int Sudoku_IsSolved(const struct Sudoku *game) {
       char cell = game->board[i][j];
       // convert to index
       cell -= 49;
+      if (cell < 0 || cell > 9)
+        return -1;
 
       if (rows[i][(int) cell]) return 0;
       if (columns[j][(int) cell]) return 0;
