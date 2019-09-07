@@ -16,7 +16,7 @@ int main(int argc, char **argv) {
   const char *port = argv[3];
   int connection = Socket_Connect(host, port);
 
-hash_handlers();    // initialize handler table
+  hash_handlers();    // initialize handler table
   while (1) {
     // read a line of input
     char linebuffer[256];

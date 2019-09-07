@@ -1,7 +1,7 @@
 #ifndef CLIENT_HANDLERS_H_
 #define CLIENT_HANDLERS_H_
 
-typedef void Handler(int);
+typedef void Handler(int connection);
 
 // Initialize the table of command handlers
 void hash_handlers();
