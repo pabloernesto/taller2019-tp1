@@ -8,18 +8,35 @@
 #include <string.h>
 
 static void handle_get(int connection, void *context);
+static void handle_reset(int connection, void *context);
 
 static Handler *handlers[] = {
-  handle_get
+  handle_get,
+  handle_reset
 };
 
 void server_hash_handlers() {
   hcreate(32);
   hsearch((ENTRY){ .key="G", .data=handlers }, ENTER);
+  hsearch((ENTRY){ .key="R", .data=handlers + 1 }, ENTER);
 }
 
 static void handle_get(int connection, void *context) {
   struct Sudoku *game = context;
+
+  // Pretty-print the board
+  const char *msg = Sudoku_Pretty(game);
+  int msg_len = strlen(msg);
+
+  // Send the board
+  __uint32_t msg_len_encoded = htonl(msg_len);
+  Socket_SendN(connection, sizeof(msg_len_encoded), (char*) &msg_len_encoded);
+  Socket_SendN(connection, msg_len, msg);
+}
+
+static void handle_reset(int connection, void *context) {
+  struct Sudoku *game = context;
+  SudokuBoard_Clear(game->board);
 
   // Pretty-print the board
   const char *msg = Sudoku_Pretty(game);
