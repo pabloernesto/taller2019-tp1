@@ -18,4 +18,8 @@ int Sudoku_IsSolved(const struct Sudoku *game);
 // Sets all squares on the board to undefined ('0')
 void SudokuBoard_Clear(SudokuBoard board);
 
+// Pretty-print the sudoku board
+// Returns a pointer to a static memory segment, do not free
+const char *Sudoku_Pretty(const struct Sudoku *game);
+
 #endif  //SUDOKU_H_

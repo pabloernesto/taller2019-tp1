@@ -1,11 +1,13 @@
 #include "handlers.h"
 
+#include "sudoku.h"
 #include "socket.h"
 #include <stdlib.h>
 #include <search.h>
 #include <arpa/inet.h>
+#include <string.h>
 
-static void handle_get(int connection);
+static void handle_get(int connection, void *context);
 
 static Handler *handlers[] = {
   handle_get
@@ -16,29 +18,17 @@ void server_hash_handlers() {
   hsearch((ENTRY){ .key="G", .data=handlers }, ENTER);
 }
 
-static void handle_get(int connection) {
-  __uint32_t msg_size = htonl(722);
-  Socket_SendN(connection, 4, (char*) &msg_size);
-  char msg[] = "U===========U===========U===========U\n"
-                "U 3 |   | 5 U   |   | 8 U   | 1 |   U\n"
-                "U---+---+---U---+---+---U---+---+---U\n"
-                "U   |   | 7 U   |   |   U 5 |   | 8 U\n"
-                "U---+---+---U---+---+---U---+---+---U\n"
-                "U 1 | 2 |   U 7 | 5 |   U   | 9 |   U\n"
-                "U===========U===========U===========U\n"
-                "U   |   | 9 U   | 7 |   U   |   | 4 U\n"
-                "U---+---+---U---+---+---U---+---+---U\n"
-                "U   |   | 4 U 3 |   | 5 U 9 |   |   U\n"
-                "U---+---+---U---+---+---U---+---+---U\n"
-                "U 7 |   |   U   | 9 |   U 8 |   |   U\n"
-                "U===========U===========U===========U\n"
-                "U   | 3 |   U   | 4 | 6 U   | 5 | 7 U\n"
-                "U---+---+---U---+---+---U---+---+---U\n"
-                "U 4 |   | 6 U   |   |   U 1 |   |   U\n"
-                "U---+---+---U---+---+---U---+---+---U\n"
-                "U   | 7 |   U 5 |   |   U 6 |   | 9 U\n"
-                "U===========U===========U===========U\n";
-  Socket_SendN(connection, 722, msg);
+static void handle_get(int connection, void *context) {
+  struct Sudoku *game = context;
+
+  // Pretty-print the board
+  const char *msg = Sudoku_Pretty(game);
+  int msg_len = strlen(msg);
+
+  // Send the board
+  __uint32_t msg_len_encoded = htonl(msg_len);
+  Socket_SendN(connection, sizeof(msg_len_encoded), (char*) &msg_len_encoded);
+  Socket_SendN(connection, msg_len, msg);
 }
 
 void server_handle_default(int connection) {

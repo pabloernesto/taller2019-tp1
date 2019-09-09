@@ -43,3 +43,41 @@ int Sudoku_IsSolved(const struct Sudoku *game) {
 void SudokuBoard_Clear(SudokuBoard board) {
   memset(board, '0', sizeof(SudokuBoard));
 }
+
+const char *Sudoku_Pretty(const struct Sudoku *game) {
+  static char pretty[] =
+    "U===========U===========U===========U\n"
+    "U X | X | X U X | X | X U X | X | X U\n"
+    "U---+---+---U---+---+---U---+---+---U\n"
+    "U X | X | X U X | X | X U X | X | X U\n"
+    "U---+---+---U---+---+---U---+---+---U\n"
+    "U X | X | X U X | X | X U X | X | X U\n"
+    "U===========U===========U===========U\n"
+    "U X | X | X U X | X | X U X | X | X U\n"
+    "U---+---+---U---+---+---U---+---+---U\n"
+    "U X | X | X U X | X | X U X | X | X U\n"
+    "U---+---+---U---+---+---U---+---+---U\n"
+    "U X | X | X U X | X | X U X | X | X U\n"
+    "U===========U===========U===========U\n"
+    "U X | X | X U X | X | X U X | X | X U\n"
+    "U---+---+---U---+---+---U---+---+---U\n"
+    "U X | X | X U X | X | X U X | X | X U\n"
+    "U---+---+---U---+---+---U---+---+---U\n"
+    "U X | X | X U X | X | X U X | X | X U\n"
+    "U===========U===========U===========U\n";
+  for (int i = 0; i < 9; i++) {
+    for (int j = 0; j < 9; j++) {
+      if (game->hints[i][j] != '0'    // if there is a hint
+          && game->board[i][j] != '0' // and the board has something in it
+          && game->hints[i][j] != game->board[i][j])  // and they differ
+        return NULL; // The board is malformed, return error
+
+      const int width = 38;
+      const int array_index = 2 + 4*j + width * (1 + 2*i);
+      pretty[array_index] = game->hints[i][j];
+      if (game->hints[i][j] == '0') pretty[array_index] = ' ';
+      if (game->board[i][j] != '0') pretty[array_index] = game->board[i][j];
+    }
+  }
+  return pretty;
+}

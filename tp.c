@@ -4,6 +4,9 @@
 #include <stdio.h>
 #include "socket.h"
 #include <string.h>
+#include "sudoku.h"
+
+static int sudoku_from_file(struct Sudoku *s);
 
 int main(int argc, char **argv) {
   if (argc < 2) return 1;
@@ -11,6 +14,12 @@ int main(int argc, char **argv) {
   if (!strcmp(argv[1], "server")) {
     if (argc != 3) return 1;
   
+    struct Sudoku sudoku;
+    if (sudoku_from_file(&sudoku)) {
+      fputs("server: could not load board.txt\n", stderr);
+      return 1;
+    }
+
     const char *port = argv[2];
     int listener = Socket_Listen(port);
     int connection = Socket_Accept(listener);
@@ -21,7 +30,7 @@ int main(int argc, char **argv) {
     while (Socket_ReceiveN(connection, 1, opcode) == 1) {
       Handler *f = get_handler(opcode);
       if (f)
-        f(connection);
+        f(connection, &sudoku);
       else
         server_handle_default(connection);
     }
@@ -44,11 +53,28 @@ int main(int argc, char **argv) {
       char *buffer_idx = linebuffer;
       Handler *f = get_handler(strsep(&buffer_idx, " \n"));
       if (f)
-        f(connection);
+        f(connection, NULL);
       else
         client_handle_default(connection);
     }
   } else {
     return 1;
   }
+}
+
+static int sudoku_from_file(struct Sudoku *s) {
+  FILE *f = fopen("board.txt", "r");
+  if (!f) return -1;
+  SudokuBoard_Clear(s->board);
+
+  for (int i = 0; i < 9; i++) {
+    for (int j = 0; j < 9; j++) {
+      if (!fscanf(f, " %1[0-9]", &(s->hints[i][j]))) {
+        fclose(f);
+        return -1;
+      }
+    }
+  }
+  fclose(f);
+  return 0;
 }
