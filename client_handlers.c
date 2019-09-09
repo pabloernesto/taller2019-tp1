@@ -1,4 +1,4 @@
-#include "client_handlers.h"
+#include "handlers.h"
 
 #include <search.h>
 #include <stdio.h>
@@ -15,16 +15,11 @@ static Handler *handlers[] = {
   handle_reset
 };
 
-void hash_handlers() {
+void client_hash_handlers() {
   hcreate(32);
   hsearch((ENTRY){ .key="get", .data=handlers }, ENTER);
   hsearch((ENTRY){ .key="exit", .data=handlers + 1 }, ENTER);
   hsearch((ENTRY){ .key="reset", .data=handlers + 2 }, ENTER);
-}
-
-Handler *get_handler(const char *key) {
-  ENTRY *ret = hsearch((ENTRY){ .key=(char*) key }, FIND);
-  return ret ? *(Handler **)(ret->data) : handle_default;
 }
 
 static void handle_get(int connection) {
@@ -47,7 +42,7 @@ static void handle_exit(int connection) {
   exit(0);
 }
 
-void handle_default(int connection) {
+void client_handle_default(int connection) {
   fputs("client: bad first token\n", stderr);
   Socket_Close(connection);
   hdestroy();
