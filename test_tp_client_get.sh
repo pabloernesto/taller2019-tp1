@@ -57,7 +57,7 @@ if [ "$net" != "G" ]; then
 fi
 
 delta=`diff board_display.txt $standard_output`
-if [ "$delta" == "" ]; then
+if [ "$delta" != "" ]; then
   echo "$testname failed: net expected stdout was: \n"
   cat $standard_output
   rm board_display.txt $network_output $standard_output

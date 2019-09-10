@@ -63,10 +63,11 @@ if [ "$net" != "$exnet" ]; then
   exit
 fi
 
-delta=`diff board_display.txt $standard_output`
-if [ "$delta" == "" ]; then
-  echo "$testname failed: net expected stdout was: \n"
-  cat $standard_output
+delta=`diff -q board_display.txt $standard_output`
+if [ "$delta" != "" ]; then
+  echo "$testname failed: bad stdout"
+  cat -A $standard_output
+  cat -A board_display.txt
   $cleanup
   exit
 fi
