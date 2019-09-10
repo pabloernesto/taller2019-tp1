@@ -6,6 +6,7 @@
 #include <search.h>
 #include <arpa/inet.h>
 #include <string.h>
+#include "message.h"
 
 static void handle_get(int connection, void *context);
 static void handle_reset(int connection, void *context);
@@ -25,13 +26,7 @@ static void handle_get(int connection, void *context) {
   struct Sudoku *game = context;
 
   // Pretty-print the board
-  const char *msg = Sudoku_Pretty(game);
-  int msg_len = strlen(msg);
-
-  // Send the board
-  __uint32_t msg_len_encoded = htonl(msg_len);
-  Socket_SendN(connection, sizeof(msg_len_encoded), (char*) &msg_len_encoded);
-  Socket_SendN(connection, msg_len, msg);
+  Message_Send(connection, Sudoku_Pretty(game));
 }
 
 static void handle_reset(int connection, void *context) {
@@ -39,13 +34,7 @@ static void handle_reset(int connection, void *context) {
   SudokuBoard_Clear(game->board);
 
   // Pretty-print the board
-  const char *msg = Sudoku_Pretty(game);
-  int msg_len = strlen(msg);
-
-  // Send the board
-  __uint32_t msg_len_encoded = htonl(msg_len);
-  Socket_SendN(connection, sizeof(msg_len_encoded), (char*) &msg_len_encoded);
-  Socket_SendN(connection, msg_len, msg);
+  Message_Send(connection, Sudoku_Pretty(game));
 }
 
 void server_handle_default(int connection) {

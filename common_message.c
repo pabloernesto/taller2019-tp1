@@ -21,3 +21,12 @@ const char *Message_Get(int connection) {
   
   return buffer;
 }
+
+void Message_Send(int connection, const char *msg) {
+  const int msg_len = strlen(msg);
+
+  // Send the board
+  const __uint32_t msg_len_encoded = htonl(msg_len);
+  Socket_SendN(connection, sizeof(msg_len_encoded), (char*) &msg_len_encoded);
+  Socket_SendN(connection, msg_len, msg);
+}
