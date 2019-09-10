@@ -8,10 +8,11 @@
 
 const char *Message_Get(int connection) {
   static char buffer[1024];
-  if (Socket_ReceiveN(connection, sizeof(__uint32_t), buffer) < 4)
+  __uint32_t len;
+  if (Socket_ReceiveN(connection, sizeof(len), (char*) &len) < 4)
     return NULL;
 
-  const int len = ntohl(*(__uint32_t*)buffer);
+  len = ntohl(len);
   if (len > 1024) return NULL;
 
   memset(buffer, 0, sizeof(buffer));
