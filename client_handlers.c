@@ -5,22 +5,7 @@
 #include "socket.h"
 #include <stdlib.h>
 #include <string.h>
-#include <arpa/inet.h>
-
-const char *Message_Get(int connection) {
-  static char buffer[1024];
-  if (Socket_ReceiveN(connection, sizeof(__uint32_t), buffer) < 4)
-    return NULL;
-
-  const int len = ntohl(*(__uint32_t*)buffer);
-  if (len > 1024) return NULL;
-
-  memset(buffer, 0, sizeof(buffer));
-  if (Socket_ReceiveN(connection, len, buffer) < len)
-    return NULL;
-  
-  return buffer;
-}
+#include "message.h"
 
 static void handle_get(int connection, void *context);
 static void handle_exit(int connection, void *context);
