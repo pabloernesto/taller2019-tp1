@@ -51,7 +51,7 @@ wait $client $server
 # test success condition
 net=`cat $network_output`
 if [ "$net" != "G" ]; then
-  echo "$testname failed: net expected G, got '$ret'"
+  echo "$testname failed: net expected G, got '$net'"
   rm board_display.txt $network_output $standard_output
   exit
 fi
