@@ -60,8 +60,7 @@ static int client(const char *host, const char *port) {
         client_handle_default(connection);   // reached EOF
 
       // strsep the first token of the line, and query the handler table
-      char *buffer_idx = linebuffer;
-      Handler *f = get_handler(strsep(&buffer_idx, " \n"));
+      Handler *f = get_handler(strtok(linebuffer, " \n"));
       if (f)
         f(connection, NULL);
       else
