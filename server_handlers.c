@@ -54,8 +54,10 @@ static void handle_put(int connection, void *context) {
   }
   input.row--; input.col--; input.val += '0';
 
-  game->board[input.row][input.col] = input.val;
-  Message_Send(connection, Sudoku_Pretty(game));
+  if (Sudoku_Put(game, input.row, input.col, input.val))
+    Message_Send(connection, "La celda indicada no es modificable\n");
+  else
+    Message_Send(connection, Sudoku_Pretty(game));
 }
 
 void server_handle_default(int connection) {

@@ -44,6 +44,13 @@ void SudokuBoard_Clear(SudokuBoard board) {
   memset(board, '0', sizeof(SudokuBoard));
 }
 
+int Sudoku_Put(struct Sudoku *game, int row, int col, int val) {
+  if (game->hints[row][col] != '0') return -1;
+
+  game->board[row][col] = val;
+  return 0;
+}
+
 const char *Sudoku_Pretty(const struct Sudoku *game) {
   static char pretty[] =
     "U===========U===========U===========U\n"
