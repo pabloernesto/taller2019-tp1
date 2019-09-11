@@ -86,7 +86,7 @@ int Socket_ReceiveN(int socket, int n, char *s) {
   int received = 0;
   while (received < n) {
     int r = recv(socket, s, n - received, 0);
-    if (r < 0)
+    if (r <= 0)
       return received;
     received += r;
     s += received;
@@ -98,7 +98,7 @@ int Socket_SendN(int socket, int n, const char *s) {
   int sent = 0;
   while (sent < n) {
     int r = send(socket, s, n - sent, 0);
-    if (r < 0)
+    if (r <= 0)
       return sent;
     sent += r;
     s += sent;
