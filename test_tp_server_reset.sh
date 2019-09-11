@@ -54,7 +54,7 @@ server=$!
 # until the server is up
 sleep .1s
 
-echo "R" | nc localhost $port >$network_output
+echo "R" | nc -N localhost $port >$network_output
 client=$!
 
 wait $client $server
