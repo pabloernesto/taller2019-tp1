@@ -21,7 +21,10 @@ int main(int argc, char **argv) {
     return server(argv[2]);
 
   } else if (!strcmp(argv[1], "client")) {
-    if (argc != 4) return 1;
+    if (argc != 4) {
+      puts("Uso: ./tp client <host> <puerto>");
+      return 0;
+    }
     return client(argv[2], argv[3]);
 
   } else {
