@@ -74,11 +74,6 @@ const char *Sudoku_Pretty(const struct Sudoku *game) {
     "U===========U===========U===========U\n";
   for (int i = 0; i < 9; i++) {
     for (int j = 0; j < 9; j++) {
-      if (game->hints[i][j] != '0'    // if there is a hint
-          && game->board[i][j] != '0' // and the board has something in it
-          && game->hints[i][j] != game->board[i][j])  // and they differ
-        return NULL; // The board is malformed, return error
-
       const int width = 38;
       const int array_index = 2 + 4*j + width * (1 + 2*i);
       pretty[array_index] = game->hints[i][j];
