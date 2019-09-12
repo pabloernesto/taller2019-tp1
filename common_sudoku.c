@@ -77,9 +77,12 @@ const char *Sudoku_Pretty(const struct Sudoku *game) {
       const int width = 38;
       const int array_index = 2 + 4*j + width * (1 + 2*i);
 
-      if (game->board[i][j] != '0') pretty[array_index] = game->board[i][j];
-      else if (game->hints[i][j] != '0') pretty[array_index] = game->hints[i][j];
-      else pretty[array_index] = ' ';
+      if (game->board[i][j] != '0')
+        pretty[array_index] = game->board[i][j];
+      else if (game->hints[i][j] != '0')
+        pretty[array_index] = game->hints[i][j];
+      else
+        pretty[array_index] = ' ';
     }
   }
   return pretty;

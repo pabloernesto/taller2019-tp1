@@ -53,7 +53,8 @@ static void handle_put(int connection, void *context) {
     Message_Send(connection, "Error en los índices. Rango soportado: [1,9]\n");
     return;
   } else if (input.val < 1 || input.val > 9) {
-    Message_Send(connection, "Error en el valor ingresado. Rango soportado: [1,9]\n");
+    Message_Send(connection,
+      "Error en el valor ingresado. Rango soportado: [1,9]\n");
     return;
   }
   input.row--; input.col--; input.val += '0';
