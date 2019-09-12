@@ -11,8 +11,6 @@ static int client(const char *host, const char *port);
 static int sudoku_from_file(struct Sudoku *s);
 
 int main(int argc, char **argv) {
-  if (argc < 2) return 1;
-
   if (!strcmp(argv[1], "server")) {
     if (argc != 3) {
       puts("Uso: ./tp server <puerto>");
@@ -28,7 +26,7 @@ int main(int argc, char **argv) {
     return client(argv[2], argv[3]);
 
   } else {
-    return 1;
+    puts("Modo no soportado, el primer parámetro debe ser server o client");
   }
 }
 
