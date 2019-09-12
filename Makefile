@@ -114,7 +114,7 @@ endif
 fuentes ?= $(filter-out test_% aux_test_%, $(wildcard *.$(extension)))
 fuentes_test ?= $(wildcard test*.$(extension))
 fuentes_aux_test ?= $(wildcard aux_test*.$(extension))
-test_scripts ?= $(wildcard test*.sh)
+test_scripts ?= $(wildcard test_*.sh)
 directorios = $(shell find . -type d -regex '.*\w+')
 
 occ := $(CC)

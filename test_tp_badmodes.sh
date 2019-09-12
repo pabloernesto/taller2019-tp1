@@ -1,25 +1,17 @@
 #! /bin/bash
-testname=test_tp_badmodes
+testname=tp_badmodes
+source testing.sh
 
-stdout=`mktemp -q`
-cleanup="rm $stdout"
+tempfile stdout
 
-exout=`mktemp -q`
+tempfile exout
 echo -ne "Uso: ./tp server <puerto>\n" >$exout
-cleanup+=" $exout"
 
 ./tp server >$stdout
 
 delta=`diff $stdout $exout`
 if [ "$delta" != "" ]; then
-  echo "$testname failed:"
-  echo -e "expected `cat $exout`"
-  echo -e "but got `cat $stdout`"
-  $cleanup
-  exit
+  fail "expected `cat $exout` but got `cat $stdout`"
 fi
 
-echo "$testname passed"
-
-# clean temporary files
-$cleanup
+pass

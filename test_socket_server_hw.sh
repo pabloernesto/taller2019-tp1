@@ -1,10 +1,10 @@
 #! /bin/bash
+testname=test_socket_server_hw
+source testing.sh
 
-# selects a random port in the range 1000..9000
-port=`echo "1000 + $RANDOM * 8000 / 32767" | bc`
-tmp_file=`mktemp -q`
-
-./aux_test_socket_server_hw $port >$tmp_file &
+port=`random_port`
+tempfile stdout
+./aux_test_socket_server_hw $port >$stdout &
 server=$!
 
 # this sleep prevents the client from attempting connection
@@ -16,12 +16,11 @@ client=$!
 
 wait $client $server
 
-ret=`cat $tmp_file`
-
-if [ "$ret" = "hello world!" ]; then
-  echo "test_socket_server_hw passed"
-else
-  echo "test_socket_server_hw failed: got $ret"
+tempfile expected_output
+echo 'hello world!' >$expected_output
+delta=`diff -q $stdout $expected_output`
+if [ "$delta" != "" ]; then
+  fail "got $stdout"
 fi
 
-rm $tmp_file
+pass

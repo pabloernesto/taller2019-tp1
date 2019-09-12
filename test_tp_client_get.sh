@@ -1,12 +1,9 @@
 #! /bin/bash
 testname=test_tp_client_get
+source testing.sh
 
-# selects a random port in the range 1000..9000
-port=`echo "1000 + $RANDOM * 8000 / 32767" | bc`
-network_output=`mktemp -q`
-standard_output=`mktemp -q`
-
-cat >board_display.txt << EOF
+tempfile board_display
+cat >$board_display << EOF
 U===========U===========U===========U
 U 3 |   | 5 U   |   | 8 U   | 1 |   U
 U---+---+---U---+---+---U---+---+---U
@@ -28,10 +25,12 @@ U   | 7 |   U 5 |   |   U 6 |   | 9 U
 U===========U===========U===========U
 EOF
 
+port=`random_port`
+tempfile network_output
 # 00 00 02 D2 is hexa for 722 big-endian
 echo "0000000: 0000 02D2" \
   | xxd -revert \
-  | cat - board_display.txt \
+  | cat - $board_display \
   | nc -l $port >$network_output &
 server=$!
 
@@ -39,6 +38,7 @@ server=$!
 # until the server is up
 sleep .1s
 
+tempfile standard_output
 ./tp client localhost $port >$standard_output << EOF
 get
 exit
@@ -51,20 +51,12 @@ wait $client $server
 # test success condition
 net=`cat $network_output`
 if [ "$net" != "G" ]; then
-  echo "$testname failed: net expected G, got '$net'"
-  rm board_display.txt $network_output $standard_output
-  exit
+  fail "expected G on network, got '$net'"
 fi
 
-delta=`diff board_display.txt $standard_output`
+delta=`diff $board_display $standard_output`
 if [ "$delta" != "" ]; then
-  echo "$testname failed: net expected stdout was: \n"
-  cat $standard_output
-  rm board_display.txt $network_output $standard_output
-  exit
+  fail "expected stdout was:"
 fi
 
-echo "$testname passed"
-
-# clean temporary files
-rm board_display.txt $network_output $standard_output
+pass
