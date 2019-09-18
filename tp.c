@@ -63,10 +63,11 @@ static int client(const char *host, const char *port) {
       if (!fgets(linebuffer, sizeof(linebuffer), stdin))
         client_handle_default(connection);   // reached EOF
 
+      char *lineidx = linebuffer;
       // strsep the first token of the line, and query the handler table
-      Handler *f = get_handler(strtok(linebuffer, " \n"));
+      Handler *f = get_handler(strsep(&lineidx, " \n"));
       if (f)
-        f(connection, NULL);
+        f(connection, lineidx);
       else
         client_handle_default(connection);
     }

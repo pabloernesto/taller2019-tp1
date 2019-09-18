@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include "socket.h"
 #include <stdlib.h>
-#include <string.h>
 #include "message.h"
 
 static void handle_get(int connection, void *context);
@@ -46,24 +45,16 @@ static void handle_exit(int connection, void *context) {
 }
 
 static void handle_put(int connection, void *context) {
-  char buffer1[5] = "P...";
+  char buffer[5] = "P...";
 
-  const char *s = strtok(NULL, " ,\n");   // get cell
-  if (!s || !strchr("0123456789", *s)) goto error;
-  buffer1[3] = *s - '0';
+  const int matched = sscanf((char*) context,
+    "%c in %c,%c", buffer + 3, buffer + 1, buffer + 2);
 
-  s = strtok(NULL, " ,\n");   // ignore the "in" in the put statement
-  if (!s) goto error;
+  if (matched != 3) goto error;
 
-  s = strtok(NULL, " ,\n");   // get row
-  if (!s || !strchr("0123456789", *s)) goto error;
-  buffer1[1] = *s - '0';
+  for (int i = 1; i < 4; i++) buffer[i] -= '0';
 
-  s = strtok(NULL, " ,\n");   // get col
-  if (!s || !strchr("0123456789", *s)) goto error;
-  buffer1[2] = *s - '0';
-
-  Socket_SendN(connection, 4, buffer1);
+  Socket_SendN(connection, 4, buffer);
 
   const char *msg = Message_Get(connection);
   fputs(msg, stdout);
