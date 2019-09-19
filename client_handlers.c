@@ -57,7 +57,11 @@ static void handle_put(int connection, void *context) {
   Socket_SendN(connection, 4, buffer);
 
   const char *msg = Message_Get(connection);
-  fputs(msg, stdout);
+  if (*msg == 'U')
+    fputs(msg, stdout);
+  else
+    fputs(msg, stderr);
+
   return;
 
 error:

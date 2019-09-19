@@ -17,7 +17,8 @@ server=$!
 sleep .1s
 
 tempfile standard_output
-./tp client localhost $port >$standard_output << EOF
+tempfile standard_error
+./tp client localhost $port >$standard_output 2>$standard_error << EOF
 put 4 in 0,2
 exit
 EOF
@@ -36,11 +37,17 @@ if [ "$delta" != "" ]; then
   fail "net expected '$exnet'\n\tgot '$net'"
 fi
 
-tempfile expected_stdout
-echo -ne "Error en los índices. Rango soportado: [1,9]\n" >$expected_stdout
-delta=`diff -q $standard_output $expected_stdout`
+tempfile empty_file
+delta=`diff -q $standard_output $empty_file`
 if [ "$delta" != "" ]; then
-  fail "`got\nhd $standard_output`\n\texpected\n`hd $expected_stdout`"
+  fail "expected empty output, got \"`cat $standard_output`\""
+fi
+
+tempfile expected_stderr
+echo -ne "Error en los índices. Rango soportado: [1,9]\n" >$expected_stderr
+delta=`diff -q $standard_error $expected_stderr`
+if [ "$delta" != "" ]; then
+  fail "`got\nhd $standard_error`\n\texpected\n`hd $expected_stderr`"
 fi
 
 pass
