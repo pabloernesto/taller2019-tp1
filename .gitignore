@@ -10,3 +10,5 @@ test_*
 aux_test_*
 !aux_test_*.c
 !aux_test_*.h
+
+entrega.zip

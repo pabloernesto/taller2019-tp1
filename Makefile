@@ -111,6 +111,7 @@ LD = $(CXX)
 endif
 
 # Si no especifica archivos, tomo todos.
+headers ?= $(filter-out minunit.h, $(wildcard *.h))
 fuentes ?= $(filter-out test_% aux_test_%, $(wildcard *.$(extension)))
 fuentes_test ?= $(wildcard test*.$(extension))
 fuentes_aux_test ?= $(wildcard aux_test*.$(extension))
@@ -134,7 +135,7 @@ endif
 # REGLAS
 #########
 
-.PHONY: all clean lint test
+.PHONY: all clean lint test zip
 
 all: $(target)
 
@@ -170,4 +171,10 @@ $(aux_test_bins): %: %.o $(o_common_files)
 
 clean:
 	$(RM) $(target) $(aux_test_bins) $(test_bins) \
-		$(o_files) $(o_aux_test_files) $(o_test_files)
+		$(o_files) $(o_aux_test_files) $(o_test_files) \
+		entrega.zip
+
+zip: entrega.zip
+
+entrega.zip: $(fuentes) $(headers)
+	zip entrega $^
