@@ -47,12 +47,14 @@ static void handle_exit(int connection, void *context) {
 static void handle_put(int connection, void *context) {
   char buffer[5] = "P...";
 
+  int val, row, col;
   const int matched = sscanf((char*) context,
-    "%c in %c,%c", buffer + 3, buffer + 1, buffer + 2);
-
+    "%d in %d,%d", &val, &row, &col);
   if (matched != 3) goto error;
 
-  for (int i = 1; i < 4; i++) buffer[i] -= '0';
+  buffer[1] = row;
+  buffer[2] = col;
+  buffer[3] = val;
 
   Socket_SendN(connection, 4, buffer);
 
