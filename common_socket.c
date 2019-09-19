@@ -45,7 +45,7 @@ int Socket_Listen(const char *port) {
 }
 
 int Socket_Accept(int listener) {
-  socklen_t addr_len;
+  socklen_t addr_len = 0;
   struct sockaddr addr_p;
   return accept(listener, &addr_p, &addr_len);
 }
