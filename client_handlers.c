@@ -66,7 +66,6 @@ error:
 }
 
 void client_handle_default(int connection) {
-  fputs("client: bad first token\n", stderr);
   Socket_Close(connection);
   hdestroy();
   exit(1);
