@@ -14,7 +14,7 @@ const SudokuBoard sector_map = {
   { 6, 6, 6, 7, 7, 7, 8, 8, 8 }
 };
 
-int Sudoku_IsSolved(const struct Sudoku *game) {
+int Sudoku_Verify(const struct Sudoku *game) {
   if (!game) return -1;
 
   char rows[9][9] = {{ 0 }};
@@ -25,9 +25,11 @@ int Sudoku_IsSolved(const struct Sudoku *game) {
     for (int j = 0; j < 9; j++) {
       char cell = game->board[i][j];
       // convert to index
-      cell -= 49;
-      if (cell < 0 || cell > 9)
-        return -1;
+      cell -= '0';
+      if (cell < 0 || cell > 9) return -1;
+
+      // ignore empty cells
+      if (!cell--) continue;
 
       if (rows[i][(int) cell]) return 0;
       if (columns[j][(int) cell]) return 0;
@@ -42,6 +44,10 @@ int Sudoku_IsSolved(const struct Sudoku *game) {
 
 void SudokuBoard_Clear(SudokuBoard board) {
   memset(board, '0', sizeof(SudokuBoard));
+}
+
+void Sudoku_Reset(struct Sudoku* game) {
+  memcpy(game->board, game->hints, sizeof(SudokuBoard));
 }
 
 int Sudoku_Put(struct Sudoku *game, int row, int col, int val) {

@@ -11,12 +11,15 @@ struct Sudoku {
   SudokuBoard hints;
 };
 
-// Checks if the board is solved.
-// Returns 1 if solved, 0 if not, or a negative number if an error ocurred.
-int Sudoku_IsSolved(const struct Sudoku *game);
+// Checks if the board breaks some rule.
+// Returns 1 if ok, 0 if not, or a negative number if an error ocurred.
+int Sudoku_Verify(const struct Sudoku *game);
 
 // Sets all squares on the board to undefined ('0')
 void SudokuBoard_Clear(SudokuBoard board);
+
+// Set the game board to it's initial state.
+void Sudoku_Reset(struct Sudoku* game);
 
 // Update the board state.
 // returns 0 on success, or -1 if the cell was already occupied by a hint.

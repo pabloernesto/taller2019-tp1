@@ -7,15 +7,18 @@
 #include <arpa/inet.h>
 #include <string.h>
 #include "message.h"
+#include <stdio.h>
 
 static void handle_get(int connection, void *context);
 static void handle_reset(int connection, void *context);
 static void handle_put(int connection, void *context);
+static void handle_verify(int connection, void *context);
 
 static Handler *handlers[] = {
   handle_get,
   handle_reset,
-  handle_put
+  handle_put,
+  handle_verify
 };
 
 void server_hash_handlers() {
@@ -23,6 +26,7 @@ void server_hash_handlers() {
   hsearch((ENTRY){ .key="G", .data=handlers }, ENTER);
   hsearch((ENTRY){ .key="R", .data=handlers + 1 }, ENTER);
   hsearch((ENTRY){ .key="P", .data=handlers + 2 }, ENTER);
+  hsearch((ENTRY){ .key="V", .data=handlers + 3 }, ENTER);
 }
 
 static void handle_get(int connection, void *context) {
@@ -34,7 +38,7 @@ static void handle_get(int connection, void *context) {
 
 static void handle_reset(int connection, void *context) {
   struct Sudoku *game = context;
-  SudokuBoard_Clear(game->board);
+  Sudoku_Reset(game);
 
   // Pretty-print the board
   Message_Send(connection, Sudoku_Pretty(game));
@@ -63,6 +67,15 @@ static void handle_put(int connection, void *context) {
     Message_Send(connection, "La celda indicada no es modificable\n");
   else
     Message_Send(connection, Sudoku_Pretty(game));
+}
+
+static void handle_verify(int connection, void *context) {
+  struct Sudoku *game = context;
+  switch (Sudoku_Verify(game)) {
+    case 0: Message_Send(connection, "ERROR\n"); break;
+    case 1: Message_Send(connection, "OK\n"); break;
+    default: Message_Send(connection, "Sudoku_Verify failed\n");
+  }
 }
 
 void server_handle_default(int connection) {

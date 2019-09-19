@@ -78,7 +78,6 @@ static int client(const char *host, const char *port) {
 static int sudoku_from_file(struct Sudoku *s) {
   FILE *f = fopen("board.txt", "r");
   if (!f) return -1;
-  SudokuBoard_Clear(s->board);
 
   for (int i = 0; i < 9; i++) {
     for (int j = 0; j < 9; j++) {
@@ -89,5 +88,7 @@ static int sudoku_from_file(struct Sudoku *s) {
     }
   }
   fclose(f);
+
+  Sudoku_Reset(s);
   return 0;
 }

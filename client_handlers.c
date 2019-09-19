@@ -10,12 +10,14 @@ static void handle_get(int connection, void *context);
 static void handle_exit(int connection, void *context);
 static void handle_reset(int connection, void *context);
 static void handle_put(int connection, void *context);
+static void handle_verify(int connection, void *context);
 
 static Handler *handlers[] = {
   handle_get,
   handle_exit,
   handle_reset,
-  handle_put
+  handle_put,
+  handle_verify
 };
 
 void client_hash_handlers() {
@@ -24,6 +26,7 @@ void client_hash_handlers() {
   hsearch((ENTRY){ .key="exit", .data=handlers + 1 }, ENTER);
   hsearch((ENTRY){ .key="reset", .data=handlers + 2 }, ENTER);
   hsearch((ENTRY){ .key="put", .data=handlers + 3 }, ENTER);
+  hsearch((ENTRY){ .key="verify", .data=handlers + 4 }, ENTER);
 }
 
 static void handle_get(int connection, void *context) {
@@ -69,6 +72,12 @@ static void handle_put(int connection, void *context) {
 error:
   fputs("client handle_put: malformed put statement\n", stderr);
   exit(1);
+}
+
+static void handle_verify(int connection, void *context) {
+  Socket_SendN(connection, 1, "V");
+  const char *msg = Message_Get(connection);
+  fputs(msg, stdout);
 }
 
 void client_handle_default(int connection) {
