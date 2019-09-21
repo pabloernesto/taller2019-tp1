@@ -6,37 +6,34 @@
 #include <string.h>
 #include "sudoku.h"
 
-static int server(const char *port);
-static int client(const char *host, const char *port);
+static int server(int argc, char **argv);
+static int client(int argc, char **argv);
 static int sudoku_from_file(struct Sudoku *s);
 
 int main(int argc, char **argv) {
   if (!strcmp(argv[1], "server")) {
-    if (argc != 3) {
-      puts("Uso: ./tp server <puerto>");
-      return 0;
-    }
-    return server(argv[2]);
+    return server(argc, argv);
 
   } else if (!strcmp(argv[1], "client")) {
-    if (argc != 4) {
-      puts("Uso: ./tp client <host> <puerto>");
-      return 0;
-    }
-    return client(argv[2], argv[3]);
+    return client(argc, argv);
 
   } else {
     puts("Modo no soportado, el primer parámetro debe ser server o client");
   }
 }
 
-static int server(const char *port) {
+static int server(int argc, char **argv) {
+    if (argc != 3) {
+      puts("Uso: ./tp server <puerto>");
+      return 0;
+    }
+
     struct Sudoku sudoku;
     if (sudoku_from_file(&sudoku)) {
       fputs("server: could not load board.txt\n", stderr);
       return 1;
     }
-    int listener = Socket_Listen(port);
+    int listener = Socket_Listen(argv[2]);
     int connection = Socket_Accept(listener);
     Socket_Close(listener);   // accept a single connection
 
@@ -53,8 +50,13 @@ static int server(const char *port) {
     return 0;
 }
 
-static int client(const char *host, const char *port) {
-    int connection = Socket_Connect(host, port);
+static int client(int argc, char **argv) {
+    if (argc != 4) {
+      puts("Uso: ./tp client <host> <puerto>");
+      return 0;
+    }
+
+    int connection = Socket_Connect(argv[2], argv[3]);
 
     client_hash_handlers();    // initialize handler table
     while (1) {
