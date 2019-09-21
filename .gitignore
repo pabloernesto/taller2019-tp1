@@ -12,3 +12,6 @@ aux_test_*
 !aux_test_*.h
 
 entrega.zip
+
+# LibreOffice Writer swap files
+.~*#
